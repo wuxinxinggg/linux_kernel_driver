@@ -1,0 +1,25 @@
+1. Kernel panic: Bad data_limit，经过调试发现copy_mem中set_base之后再调用get_base检查时，
+old_code_base = 0x4000000, old_data_base = 0x400，应该是set_base的原因，参照2.4.x内核的实
+现，问题解决，还是优化的原因。参考我的分析http://blog.sina.com.cn/s/blog_63fe270801014w5u.html
+
+2. buffer.c的insert_into_queues最后一行前添加if(bh->b_next)对bh->b_next进行判断，否则会修
+改页目录表第5(地址0x14)项的内容，对结果貌似是没影响。
+
+3. memory.c的copy_page宏增加对esi，edi的保存操作，否则对应的from和to会被修改，会用到swap
+分区，如果没有分配swap区则出现"Trying to read nonexistent block-device",开启swap分区则出
+现"harddisk I/O error"错误。
+
+4. buffer.c COPYBLK增加对esi，edi的出入栈操作，否则会出现general_protection，原因同上，但
+是不知道为什么会出现general protection，难道访问了不该访问的内存？这个问题的解决参考http:
+//blog.chinaunix.net/uid-23917107-id-3173253.html，博客里问题3的实际上是直接回避，没有解
+决，问题出在copy_page，见上面第3点的分析；同样，问题5的解决方法也不彻底，见上面1的分析
+
+5. string.h的memset函数增加对edi的出入栈操作，原因同copy_page。
+
+6. swap.c的get_free_page函数最后增加cld清除方向标志，没清除好像也没引起问题。
+
+7. signal.c的do_signal和sys_sigsuspend函数，将类似*(&restart) = 1这样的表达式改成用嵌入式
+汇编赋值，调试发现这样的语句直接被忽略掉，-O优化选项里的那一项引起这个问题呢？这个问题调
+试得让人好崩溃，过程难以言表。。。不过这是最后一个问题！
+
+至此在-O优化选项下的linux-0.12终于跑起来了！

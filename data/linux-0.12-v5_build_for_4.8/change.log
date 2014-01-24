@@ -1,0 +1,190 @@
+Only in linux-0.12-v5: dif.out
+diff -r linux-0.12-v4/fs/bitmap.c linux-0.12-v5/fs/bitmap.c
+15,17c15,17
+< 	"rep\n\t" \
+< 	"stosl" \
+< 	::"a" (0),"c" (BLOCK_SIZE/4),"D" ((long) (addr)):)
+---
+> 		"rep\n\t" \
+> 		"stosl" \
+> 		::"a" (0),"c" (BLOCK_SIZE/4),"D" ((long) (addr)):)
+diff -r linux-0.12-v4/fs/buffer.c linux-0.12-v5/fs/buffer.c
+163c163,164
+< 	bh->b_next->b_prev = bh;
+---
+> 	if(bh->b_next)
+> 		bh->b_next->b_prev = bh;
+285,286c286,291
+< 	"rep\n\t" \
+< 	"movsl\n\t" \
+---
+> 		"pushl %%edi\n\t" \
+> 		"pushl %%esi\n\t" \
+> 		"rep\n\t" \
+> 		"movsl\n\t" \
+> 		"popl %%esi\n\t" \
+> 		"popl %%edi\n\t" \
+288a294,300
+> 
+> //#define COPYBLK(from,to) \
+> 	__asm__("cld\n\t" \
+> 			"rep\n\t" \
+> 			"movsl\n\t" \
+> 			::"c" (BLOCK_SIZE/4),"S" (from),"D" (to) \
+> 			:)
+diff -r linux-0.12-v4/fs/Makefile linux-0.12-v5/fs/Makefile
+5c5
+< CFLAGS	=-Wall -O0 -g -fstrength-reduce -fomit-frame-pointer -fno-defer-pop -nostdinc -fno-stack-protector -fno-builtin -I../include
+---
+> CFLAGS	=-Wall -O -g -fstrength-reduce -fomit-frame-pointer -fno-defer-pop -nostdinc -fno-stack-protector -fno-builtin -I../include
+diff -r linux-0.12-v4/include/linux/sched.h linux-0.12-v5/include/linux/sched.h
+239a240
+> /*
+241c242
+< __asm__("movw %%dx,%0\n\t" \
+---
+> __asm__ __volatile__ ("movw %%dx,%0\n\t" \
+249a251
+> */
+251d252
+< /*
+263d263
+< */
+305a306
+> 
+diff -r linux-0.12-v4/include/string.h linux-0.12-v5/include/string.h
+398,401c398,403
+< 	"rep\n\t"
+< 	"stosb"
+< 	::"a" (c),"D" (s),"c" (count)
+< 	:);
+---
+> 		"pushl %%edi\n\t"
+> 		"rep\n\t"
+> 		"stosb\n\t"
+> 		"popl %%edi"
+> 		::"a" (c),"D" (s),"c" (count)
+> 		:);
+diff -r linux-0.12-v4/init/main.c linux-0.12-v5/init/main.c
+23,24c23,24
+< //inline int fork(void) __attribute__((always_inline));
+< //inline int pause(void) __attribute__((always_inline));
+---
+> inline int fork(void) __attribute__((always_inline));
+> inline int pause(void) __attribute__((always_inline));
+199c199
+< 	printf("%d buffers = %d bytes buffer space\n\r",NR_BUFFERS,
+---
+> 	printf("%d buffers = %d bytes buffer space\n\r",NR_BUFFERS,	
+209c209
+< 	if (pid>0)
+---
+>   if (pid>0)
+Only in linux-0.12-v5/init: .main.c.swp
+diff -r linux-0.12-v4/init/Makefile linux-0.12-v5/init/Makefile
+2c2
+< 	gcc -fno-builtin -nostdinc -I ../include -S main.c
+---
+> 	gcc -O -fno-builtin -nostdinc -I ../include -S main.c
+diff -r linux-0.12-v4/kernel/blk_drv/Makefile linux-0.12-v5/kernel/blk_drv/Makefile
+14c14
+< CFLAGS	=-Wall -O0 -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../../include
+---
+> CFLAGS	=-Wall -O -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../../include
+diff -r linux-0.12-v4/kernel/chr_drv/Makefile linux-0.12-v5/kernel/chr_drv/Makefile
+14c14
+< CFLAGS	=-Wall -O0 -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../../include 
+---
+> CFLAGS	=-Wall -O -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../../include 
+diff -r linux-0.12-v4/kernel/Makefile linux-0.12-v5/kernel/Makefile
+14,15c14,15
+< CFLAGS	=-Wall -O0 -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../include
+< CPP	=gcc -E -nostdinc -I../include
+---
+> CFLAGS	=-Wall -O -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../include
+> CPP	=gcc -E -nostdinc -I../include 
+diff -r linux-0.12-v4/kernel/math/Makefile linux-0.12-v5/kernel/math/Makefile
+14c14
+< CFLAGS	=-Wall -O0 -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../../include
+---
+> CFLAGS	=-Wall -O -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../../include
+diff -r linux-0.12-v4/kernel/signal.c linux-0.12-v5/kernel/signal.c
+53,55c53,55
+< 	/* we're restarting */
+< 	current->blocked = old_mask;
+< 	return -EINTR;
+---
+> 			/* we're restarting */
+> 			current->blocked = old_mask;
+> 			return -EINTR;
+58,59c58,65
+<     *(&restart) = 1;
+<     *(&old_mask) = current->blocked;
+---
+>     //*(&restart) = 1;
+> 		__asm__("movl $1, %0\n\t" \
+> 				: \
+> 				:"m"(restart));
+>     //*(&old_mask) = current->blocked;
+> 		__asm__("movl %%eax, %0\n\t" \
+> 				: \
+> 				:"m"(old_mask), "a"(current->blocked));
+152c158,162
+< 			*(&eip) = old_eip -= 2;
+---
+> 			//*(&eip) = old_eip -= 2;
+> 			old_eip -= 2;
+> 			__asm__ ("movl %%eax, %0\n\t" \
+> 					: \
+> 					:"m"(eip), "a"(old_eip));
+195c205,208
+< 	*(&esp) -= longs;
+---
+> 	//*(&esp) -= longs;
+> 	__asm__("subl %1, %0\n\t" \
+> 			: \
+> 			:"m"(esp), "a"(longs*4));
+diff -r linux-0.12-v4/lib/Makefile linux-0.12-v5/lib/Makefile
+14c14
+< CFLAGS	=-Wall -O0 -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../include
+---
+> CFLAGS	=-Wall -O -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../include
+diff -r linux-0.12-v4/Makefile linux-0.12-v5/Makefile
+14c14
+< CFLAGS	=-Wall -O0 -g -fstrength-reduce -fomit-frame-pointer -fno-stack-protector -fno-builtin
+---
+> CFLAGS	=-Wall -O -g -fstrength-reduce -fomit-frame-pointer -fno-stack-protector -fno-builtin
+70c70,71
+< 	-o tools/system > System.map
+---
+> 	-o tools/system
+> 	nm tools/system | grep -v '\(compiled\)\|\(\.o$$\)\|\( [aU] \)\|\(\.\.ng$$\)\|\(LASH[RL]DI\)'| sort > System.map
+diff -r linux-0.12-v4/mm/Makefile linux-0.12-v5/mm/Makefile
+2c2
+< CFLAGS	=-O0 -Wall -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../include
+---
+> CFLAGS	=-O -Wall -g -fstrength-reduce -fomit-frame-pointer -finline-functions -nostdinc -fno-stack-protector -fno-builtin -I../include
+diff -r linux-0.12-v4/mm/memory.c linux-0.12-v5/mm/memory.c
+45c45
+< __asm__("cld ; rep ; movsl"::"S" (from),"D" (to),"c" (1024):)
+---
+> __asm__("pushl %%edi; pushl %%esi; cld ; rep ; movsl; popl %%esi; popl %%edi"::"S" (from),"D" (to),"c" (1024):)
+46a47,48
+> //#define copy_page(from,to) \
+> 		__asm__("cld ; rep ; movsl"::"S" (from),"D" (to),"c" (1024):)
+diff -r linux-0.12-v4/mm/swap.c linux-0.12-v5/mm/swap.c
+186,187c186,188
+< 		"movl %%edx,%%eax\n"
+< 		"1:"
+---
+> 		"movl %%edx,%%eax\n\t"
+> 		"1:\n\t"
+> 		"cld"
+Only in linux-0.12-v5: readme
+diff -r linux-0.12-v4/tools/build.c linux-0.12-v5/tools/build.c
+42,43c42,43
+< #define DEFAULT_MAJOR_SWAP 0
+< #define DEFAULT_MINOR_SWAP 0
+---
+> #define DEFAULT_MAJOR_SWAP 0x03
+> #define DEFAULT_MINOR_SWAP 0x04
