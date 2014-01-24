@@ -1,0 +1,6 @@
+#!/bin/sh
+DEBUGFS=`grep debugfs /proc/mounts | awk '{ print $2; }'`
+sudo su -c "                                                    \
+	echo nop > $DEBUGFS/tracing/current_tracer;		\
+	echo 0 > $DEBUGFS/tracing/function_profile_enabled;	\
+	echo 1 > $DEBUGFS/tracing/function_profile_enabled"

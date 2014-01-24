@@ -1,0 +1,5 @@
+#!/bin/sh
+DEBUGFS=`grep debugfs /proc/mounts | awk '{ print $2; }'`
+sudo su -c "							\
+	echo 0 > $DEBUGFS/tracing/tracing_on;			\
+	echo nop > $DEBUGFS/tracing/current_tracer"

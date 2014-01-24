@@ -1,0 +1,9 @@
+#!/bin/sh
+DEBUGFS=`grep debugfs /proc/mounts | awk '{ print $2; }'`
+idx="0"
+if [ "x$1" != "x" ] ; then
+	idx="$1"
+fi
+
+cp $DEBUGFS/tracing/trace_stat/function$idx /tmp
+less /tmp/function$idx

@@ -1,0 +1,11 @@
+#!/bin/sh
+DEBUGFS=`grep debugfs /proc/mounts | awk '{ print $2; }'`
+sudo su -c "							\
+	echo 0 > $DEBUGFS/tracing/tracing_on;			\
+	echo $$ > $DEBUGFS/tracing/set_ftrace_pid;		\
+	echo function_graph > $DEBUGFS/tracing/current_tracer;	\
+	echo 1 > $DEBUGFS/tracing/tracing_on"
+exec $*
+sudo su -c "\
+	echo -1 > $DEBUGFS/tracing/set_ftrace_pid;		\		
+	echo 0 > $DEBUGFS/tracing/tracing_on"
