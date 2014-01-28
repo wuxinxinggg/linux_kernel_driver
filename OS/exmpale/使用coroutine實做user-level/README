@@ -1,0 +1,249 @@
+使用 coroutine 實做 user-level thread
+
+Donald E. Knuth 的經典著作《The Art of Computer Programming》提到 coroutine 這個自 1960 年代即現身的多工實做技術，原理相當單純，在多數的文獻中會以 "yield" 來闡述，但不免令人困惑。coroutine 的 "yield" 是屬於程式語言層面，透過特定技巧或機制，讓原本循序執行的陳述指令，得以做出交錯執行的結果，而 multi-threading 的 "yield" 則偏重於系統層面 (如 CPU resource)，簡單來說，該如何一方面允許多 thread 並行，又能適當規劃個別單元對系統資源的使用。
+
+ 
+
+拜讀 Simon Tatham 一篇經典文章 [Coroutines in C]，獲益良多，作者以 run-length decompression 為例，探討 coroutine 技巧可如何大幅改善原本的設計流程，如此的技巧遍及多種領域，像是知名的 SSH client PuTTY 就大量使用。
+
+ 
+
+最佳的理解方式就是找個主題來驗證我們的認知，所以我試著在 Linux 上模擬一個 user-level thread system，以下是實做程式碼：
+
+ 
+
+ 
+
+#include <stdio.h>
+
+#include <unistd.h>
+
+ 
+
+#define THREAD_INTERVAL 500
+
+#define cr_start() \
+
+        static int __s = 0; \
+
+        switch (__s) { \
+
+          case 0:
+
+#define cr_yield \
+
+          { __s = __LINE__; \
+
+            usleep(THREAD_INTERVAL); \
+
+            return; \
+
+          case __LINE__: ; \
+
+          }
+
+#define cr_end() \
+
+        } __s = 0;
+
+ 
+
+static int condition = 1;
+
+ 
+
+static void user_thread_1() {
+
+    cr_start();
+
+ 
+
+    for (; ;) {
+
+        /* do something */
+
+        printf("Run %s\n", __FUNCTION__);
+
+        cr_yield;
+
+    }
+
+ 
+
+    cr_end();
+
+}
+
+ 
+
+static void user_thread_2() {
+
+    cr_start();
+
+ 
+
+    for (; ;) {
+
+        if (condition) {
+
+            /* do something conditional */
+
+            printf("Run %s - (1)\n", __FUNCTION__);
+
+            cr_yield;
+
+        }
+
+ 
+
+        /* do something */
+
+        printf("Run %s - (2)\n", __FUNCTION__);
+
+        condition = !condition;
+
+        cr_yield;
+
+    }
+
+ 
+
+    cr_end();
+
+}
+
+ 
+
+int main() {
+
+    for (; ;) {
+
+        user_thread_1();
+
+        user_thread_2();
+
+    }
+
+ 
+
+    return 0;
+
+}
+
+ 
+
+ 
+
+一般的 function/method invocation 是 context switching 的行為 (注意：這裡的 context switching 與作業系統的術語不直接對應，而是強調 stack-based operation)，而 coroutine 最重要的想法就是保持上一次的 context，所以常用的實做技巧就是透過 "generator" 來實現 coroutine 中對 "yield" 的認知："yield = context saver + jump"。由上面的程式碼列表可見，我們透過 C Macro 簡化細節以吻合 coroutine 的「表徵」，同時也可看到如此模擬出 thread scheduler 的行為，換言之，這是「合作式多工」的基礎概念。
+
+ 
+
+以下為上述程式碼之執行結果：
+
+$ ./user-thread
+
+Run user_thread_1
+
+Run user_thread_2 - (1)
+
+Run user_thread_1
+
+Run user_thread_2 - (2)
+
+Run user_thread_1
+
+Run user_thread_2 - (2)
+
+Run user_thread_1
+
+Run user_thread_2 - (1)
+
+Run user_thread_1
+
+Run user_thread_2 - (2)
+
+Run user_thread_1
+
+Run user_thread_2 - (2)
+
+Run user_thread_1
+
+Run user_thread_2 - (1)
+
+...
+
+而程式碼列表中的 usleep 則確保有機會透過 Ctrl-C 或互動式操作結束此程式，避免無謂的 busy-waiting。
+
+由 jserv 發表於 December 3, 2006 01:23 PM 
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>     /* exit */
+
+#include <setjmp.h>     /* jmp_buf, setjmp, longjmp */
+
+#include <unistd.h>
+
+ 
+
+static jmp_buf jmpbuf_th0;
+
+static jmp_buf jmpbuf_th1;
+
+ 
+
+static void thread_0() {
+
+    printf("%s: 0\n", __FUNCTION__);
+
+    sleep(1);
+
+    longjmp(jmpbuf_th0, 1);
+
+}
+
+ 
+
+static void thread_1() {
+
+    printf("%s: 0\n", __FUNCTION__);
+
+    sleep(1);
+
+    longjmp(jmpbuf_th1, 1);
+
+}
+
+ 
+
+ 
+
+int main() {
+
+    int rc0, rc1;
+
+// entry_thread_0:
+
+    rc0 = setjmp(jmpbuf_th0);
+
+ 
+
+    if (rc0 != 0) {
+
+        thread_1();
+
+    }
+
+ 
+
+// entry_thread_1:
+
+    rc1 = setjmp(jmpbuf_th1);
+
+    thread_0();
+
+    return 0;
+
+}
