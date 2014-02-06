@@ -1,0 +1,331 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD /home/hirata/chap8/globalvar/main.o
+
+.interp
+ *(.interp)
+
+.note.gnu.build-id
+ *(.note.gnu.build-id)
+
+.hash
+ *(.hash)
+
+.gnu.hash
+ *(.gnu.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+
+.rela.text
+ *(.rela.text)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+
+.rela.rodata
+ *(.rela.rodata)
+
+.rel.data.rel.ro
+ *(.rel.data.rel.ro)
+
+.rela.data.rel.ro
+ *(.rela.data.rel.ro)
+
+.rel.data
+ *(.rel.data)
+
+.rela.data
+ *(.rela.data)
+
+.rel.tdata
+ *(.rel.tdata)
+
+.rela.tdata
+ *(.rela.tdata)
+
+.rel.tbss
+ *(.rel.tbss)
+
+.rela.tbss
+ *(.rela.tbss)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.sharable_data
+ *(.rel.sharable_data)
+
+.rela.sharable_data
+ *(.rela.sharable_data)
+
+.rel.sharable_bss
+ *(.rel.sharable_bss)
+
+.rela.sharable_bss
+ *(.rela.sharable_bss)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.init
+ *(.init)
+
+.plt
+ *(.plt)
+
+.text           0x00000000       0x24
+ *(.text .stub)
+ .text          0x00000000       0x24 /home/hirata/chap8/globalvar/main.o
+                0x00000000                cleanup_module
+                0x00000011                init_module
+ *(.text.*personality*)
+ *(.gnu.warning)
+
+.fini
+ *(.fini)
+
+.rodata
+ *(.rodata)
+
+.rodata.str1.1  0x00000000       0x32
+ .rodata.str1.1
+                0x00000000       0x32 /home/hirata/chap8/globalvar/main.o
+
+__ksymtab       0x00000000        0x8
+ __ksymtab      0x00000000        0x8 /home/hirata/chap8/globalvar/main.o
+
+.modinfo        0x00000000       0x15
+ .modinfo       0x00000000       0x15 /home/hirata/chap8/globalvar/main.o
+
+__ksymtab_strings
+                0x00000000       0x12
+ __ksymtab_strings
+                0x00000000       0x12 /home/hirata/chap8/globalvar/main.o
+
+.rodata1
+ *(.rodata1)
+
+.eh_frame_hdr
+ *(.eh_frame_hdr)
+
+.eh_frame
+ *(.eh_frame)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.eh_frame
+ *(.eh_frame)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.tdata
+ *(.tdata)
+
+.tbss
+ *(.tbss)
+
+.preinit_array
+ *(.preinit_array)
+
+.init_array
+ *(SORT(.init_array.*))
+ *(.init_array)
+
+.fini_array
+ *(.fini_array)
+ *(SORT(.fini_array.*))
+
+.jcr
+ *(.jcr)
+
+.dynamic
+ *(.dynamic)
+
+.got
+ *(.got)
+
+.got.plt
+ *(.got.plt)
+
+.data           0x00000000        0x0
+ *(.data)
+ .data          0x00000000        0x0 /home/hirata/chap8/globalvar/main.o
+
+.data1
+ *(.data1)
+
+.sharable_data
+ *(.sharable_data)
+
+.bss            0x00000000        0xc
+ *(.dynbss)
+ *(.bss)
+ .bss           0x00000000        0xc /home/hirata/chap8/globalvar/main.o
+                0x00000004                g_sample_counter2
+                0x00000008                g_sample_counter4
+                0x00000000                g_sample_counter
+ *(COMMON)
+
+.sharable_bss
+ *(.dynsharablebss)
+ *(.sharable_bss)
+ *(SHARABLE_COMMON)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x00000000       0x2e
+ *(.comment)
+ .comment       0x00000000       0x2e /home/hirata/chap8/globalvar/main.o
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000       0x20
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 /home/hirata/chap8/globalvar/main.o
+
+.debug_pubnames
+                0x00000000       0x6d
+ *(.debug_pubnames)
+ .debug_pubnames
+                0x00000000       0x6d /home/hirata/chap8/globalvar/main.o
+
+.debug_info     0x00000000     0x2f8e
+ *(.debug_info)
+ .debug_info    0x00000000     0x2f8e /home/hirata/chap8/globalvar/main.o
+
+.debug_abbrev   0x00000000      0x1e9
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x1e9 /home/hirata/chap8/globalvar/main.o
+
+.debug_line     0x00000000      0x2b9
+ *(.debug_line)
+ .debug_line    0x00000000      0x2b9 /home/hirata/chap8/globalvar/main.o
+
+.debug_frame    0x00000000       0x3c
+ *(.debug_frame)
+ .debug_frame   0x00000000       0x3c /home/hirata/chap8/globalvar/main.o
+
+.debug_str      0x00000000     0x1998
+ *(.debug_str)
+ .debug_str     0x00000000     0x1998 /home/hirata/chap8/globalvar/main.o
+
+.debug_loc      0x00000000       0x40
+ *(.debug_loc)
+ .debug_loc     0x00000000       0x40 /home/hirata/chap8/globalvar/main.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges
+ *(.debug_ranges)
+
+.gnu.attributes
+ *(.gnu.attributes)
+OUTPUT(/home/hirata/chap8/globalvar/sample.o elf32-i386)
+
+.note.GNU-stack
+                0x00000000        0x0
+ .note.GNU-stack
+                0x00000000        0x0 /home/hirata/chap8/globalvar/main.o

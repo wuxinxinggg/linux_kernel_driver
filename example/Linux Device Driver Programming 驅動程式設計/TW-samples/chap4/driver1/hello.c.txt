@@ -1,0 +1,20 @@
+     1	#include <linux/module.h>
+     2	#include <linux/init.h>
+     3	
+     4	MODULE_LICENSE("Dual BSD/GPL");
+     5	
+     6	static int hello_init(void)
+     7	{
+     8		printk(KERN_ALERT "driver loaded\n");
+     9			
+    10		return 0;
+    11	}
+    12	
+    13	static void hello_exit(void)
+    14	{
+    15		printk(KERN_ALERT "driver unloaded\n");
+    16	}
+    17	
+    18	module_init(hello_init);
+    19	module_exit(hello_exit);
+    20	

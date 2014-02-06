@@ -1,0 +1,6 @@
+
+sudo /sbin/rmmod ./wakeup.ko
+
+sudo /sbin/insmod ./wakeup.ko
+/bin/dmesg | tail
+

@@ -1,0 +1,16 @@
+
+sudo /sbin/insmod ./sample.ko
+/bin/dmesg | tail
+
+echo -----------------------------------------------------------------
+/sbin/lsmod | grep sample
+echo -----------------------------------------------------------------
+
+ls -l /dev/devone*
+
+sudo rm -f /dev/devone*
+sudo /bin/mknod --mode=666 /dev/devone c `grep devone /proc/devices | awk '{print $1;}'` 0
+ls -l /dev/devone*
+
+#hexdump -C -n 16 /dev/devone
+

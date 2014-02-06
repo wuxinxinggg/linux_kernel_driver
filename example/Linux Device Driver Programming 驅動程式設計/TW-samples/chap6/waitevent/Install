@@ -1,0 +1,13 @@
+
+sudo /sbin/insmod ./sample.ko
+/bin/dmesg | tail
+
+echo -----------------------------------------------------------------
+/sbin/lsmod | grep sample
+echo -----------------------------------------------------------------
+
+sudo tail /var/log/messages
+
+sudo /sbin/rmmod sample
+/bin/dmesg | tail
+

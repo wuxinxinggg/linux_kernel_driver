@@ -1,0 +1,19 @@
+
+#sudo /sbin/insmod ./devone.ko 
+#sudo /sbin/insmod ./devone.ko timeout_value=3 irq_value=10
+sudo /sbin/insmod ./devone.ko timeout_value=3 irq_value=3
+/bin/dmesg | tail
+
+echo -----------------------------------------------------------------
+/sbin/lsmod | grep sample
+echo -----------------------------------------------------------------
+
+#sudo tail -f /var/log/messages
+
+sudo rm -f /dev/devone
+sudo /bin/mknod /dev/devone c 250 0
+ls -l /dev/devone
+
+#sudo /sbin/rmmod devone
+#/bin/dmesg | tail
+

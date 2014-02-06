@@ -1,0 +1,17 @@
+
+sudo cp -f 51-devone.rules /etc/udev/rules.d/
+
+sudo /sbin/insmod ./sample.ko
+/bin/dmesg | tail
+
+echo -----------------------------------------------------------------
+/sbin/lsmod | grep sample
+echo -----------------------------------------------------------------
+
+ls -l /dev/devone*
+#hexdump -C -n 32 /dev/devone0
+
+#sudo /sbin/rmmod sample
+#/bin/dmesg | tail
+#sudo tail /var/log/messages
+

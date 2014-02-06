@@ -1,0 +1,4 @@
+
+sudo /sbin/rmmod devone
+/bin/dmesg | tail
+

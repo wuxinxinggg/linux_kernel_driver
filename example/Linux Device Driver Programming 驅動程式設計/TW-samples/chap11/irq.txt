@@ -1,0 +1,16 @@
+           CPU0       
+  0:        784   IO-APIC-edge      timer
+  1:         10   IO-APIC-edge      i8042
+  6:          5   IO-APIC-edge      floppy
+  7:          0   IO-APIC-edge      parport0
+  8:          1   IO-APIC-edge      rtc
+  9:          0   IO-APIC-fasteoi   acpi
+ 12:         85   IO-APIC-edge      i8042
+ 14:      25070   IO-APIC-edge      libata
+ 15:       7516   IO-APIC-edge      libata
+ 16:          0   IO-APIC-fasteoi   uhci_hcd:usb1
+ 17:       5684   IO-APIC-fasteoi   eth0
+NMI:          0 
+LOC:     847674 
+ERR:          0
+MIS:          0

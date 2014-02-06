@@ -1,0 +1,7 @@
+
+sudo rm -f /dev/devon
+sudo /bin/mknod /dev/devone c $1 0
+
+hexdump -C -n 16 /dev/devone
+
+
