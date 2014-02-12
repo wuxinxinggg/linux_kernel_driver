@@ -1,0 +1,11 @@
+This is a simple example of modules.
+
+Compile:
+  Save this file name it helloworld.c
+  # echo "obj-m := helloworld.o" > Makefile
+  # make -Wall -C /lib/modules/`uname -r`/build M=`pwd` modules
+Load the module:
+  #insmod helloworld.ko
+
+
+從/var/log/kern.log  insmod and rmmod printk 印出來字串
