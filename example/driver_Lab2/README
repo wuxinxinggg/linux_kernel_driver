@@ -1,0 +1,11 @@
+make -Wall -C /lib/modules/`uname -r`/build M=`pwd` modules
+
+sudo insmod demo.ko
+
+cat /proc/devices | ag demo
+
+sudo mknod /dev/demo c 60 0  // 建立裝置檔案
+
+cat /proc/devices | ag demo
+
+sudo ./test
