@@ -305,7 +305,7 @@ extern char * ___strtok;
 
 extern inline char * strtok(char * s,const char * ct)
 {
-register char * __res __asm__("si");
+register char * __res;
 __asm__("testl %1,%1\n\t"
 	"jne 1f\n\t"
 	"testl %0,%0\n\t"
