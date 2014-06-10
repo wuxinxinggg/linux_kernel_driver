@@ -1,0 +1,1 @@
+cmd_/home/jason-yao/data/Daedalus_Jimmy/02-1-hello/hello.ko := ld -r -m elf_x86_64 -T /usr/src/linux-headers-3.2.0-48-generic/scripts/module-common.lds --build-id  -o /home/jason-yao/data/Daedalus_Jimmy/02-1-hello/hello.ko /home/jason-yao/data/Daedalus_Jimmy/02-1-hello/hello.o /home/jason-yao/data/Daedalus_Jimmy/02-1-hello/hello.mod.o
