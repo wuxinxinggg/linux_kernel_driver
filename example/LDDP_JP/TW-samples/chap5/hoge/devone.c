@@ -11,6 +11,7 @@
 #include <linux/sched.h>
 #include <asm/current.h>
 #include <asm/uaccess.h>
+#include <linux/delay.h>
 
 MODULE_LICENSE("Dual BSD/GPL");
 

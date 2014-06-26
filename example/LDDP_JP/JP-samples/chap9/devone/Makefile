@@ -1,5 +1,4 @@
 
-CFLAGS += -Wall
 
 obj-m := devone.o
 

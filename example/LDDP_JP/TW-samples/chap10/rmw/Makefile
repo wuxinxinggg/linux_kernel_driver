@@ -1,6 +1,5 @@
 
 CFLAGS += -S 
-CFLAGS += -Wall 
 CFILES = main.c 
 
 obj-m += sample.o

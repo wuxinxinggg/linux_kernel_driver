@@ -1,5 +1,4 @@
 
-CFLAGS += -Wall 
 LDFLAGS += -Map $(PWD)/sample.map
 CFILES = main.c 
 

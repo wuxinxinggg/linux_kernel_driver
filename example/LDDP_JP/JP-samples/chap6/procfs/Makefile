@@ -1,6 +1,5 @@
 
 CFILES = main.c 
-CFLAGS += -Wall
 
 obj-m += sample.o
 sample-objs := $(CFILES:.c=.o)
