@@ -1,0 +1,8 @@
+sample.ko ，接著載入驅動程式，瀏覽「/proc/devices」可以看到驅動程式分配的 major number，再用這個號碼透過 mknod 建立 device file： 
+sudo /sbin/insmod ./sample.ko 
+/sbin/lsmod | grep sample 
+cat /proc/devices | grep devone 
+sudo /bin/mknod /dev/devone c 250 0 
+ls -l /dev/devone 
+可以看到 device file 的最初權限是「644」，如果要讓一般使用者也可以使用，就必須修改權限： 
+sudo chmod 666 /dev/devone
