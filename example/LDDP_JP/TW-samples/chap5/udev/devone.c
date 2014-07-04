@@ -23,7 +23,7 @@ static dev_t devone_dev;
 ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
 {
 	int i;
-	unsigned char val = 0xff;
+	unsigned char val = 0xc0;
 	int retval;
 
 	for (i = 0 ; i < count ; i++) {
@@ -68,7 +68,7 @@ static int devone_init(void)
 		goto error;
 	}
 	devone_dev = MKDEV(devone_major, devone_minor);
-	class_dev = class_device_create(
+	class_dev = device_create(
 					devone_class, 
 					NULL, 
 					devone_dev,
@@ -95,7 +95,7 @@ static void devone_exit(void)
 	dev_t dev = MKDEV(devone_major, 0);
 
 	/* unregister class */
-	class_device_destroy(devone_class, devone_dev);
+	device_destroy(devone_class, devone_dev);
 	class_destroy(devone_class);
 
 	cdev_del(&devone_cdev);

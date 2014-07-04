@@ -12,6 +12,7 @@
 #include <linux/device.h>
 #include <linux/poll.h>
 #include <asm/uaccess.h>
+#include <linux/slab.h>
 #include "devone_ioctl.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
@@ -142,7 +143,7 @@ struct file_operations devone_fops = {
 	.open = devone_open,
 	.release = devone_close,
 	.read = devone_read,
-	.ioctl = devone_ioctl,
+	.unlocked_ioctl = devone_ioctl,
 };
 
 static int devone_init(void)
@@ -171,7 +172,7 @@ static int devone_init(void)
 		goto error;
 	}
 	devone_dev = MKDEV(devone_major, devone_minor);
-	class_dev = class_device_create(
+	class_dev = device_create(
 					devone_class, 
 					NULL, 
 					devone_dev,
@@ -198,7 +199,7 @@ static void devone_exit(void)
 	dev_t dev = MKDEV(devone_major, 0);
 
 	/* unregister class */
-	class_device_destroy(devone_class, devone_dev);
+	device_destroy(devone_class, devone_dev);
 	class_destroy(devone_class);
 
 	cdev_del(&devone_cdev);
