@@ -12,6 +12,9 @@
 #include <linux/device.h>
 #include <linux/poll.h>
 #include <asm/uaccess.h>
+#include <linux/sched.h>
+#include <linux/slab.h>
+#include <linux/semaphore.h>
 
 MODULE_LICENSE("Dual BSD/GPL");
 
@@ -146,7 +149,7 @@ int devone_open(struct inode *inode, struct file *filp)
 
 	init_waitqueue_head(&dev->read_wait);
 
-	init_MUTEX(&dev->sem);
+	sema_init(&dev->sem, 1);
 
 	init_timer(&dev->timeout);
 	dev->timeout.function = devone_timeout;
@@ -196,7 +199,7 @@ static int devone_init(void)
 		goto error;
 	}
 	devone_dev = MKDEV(devone_major, devone_minor);
-	class_dev = class_device_create(
+	class_dev = device_create(
 					devone_class, 
 					NULL, 
 					devone_dev,
@@ -223,7 +226,7 @@ static void devone_exit(void)
 	dev_t dev = MKDEV(devone_major, 0);
 
 	/* unregister class */
-	class_device_destroy(devone_class, devone_dev);
+	device_destroy(devone_class, devone_dev);
 	class_destroy(devone_class);
 
 	cdev_del(&devone_cdev);
