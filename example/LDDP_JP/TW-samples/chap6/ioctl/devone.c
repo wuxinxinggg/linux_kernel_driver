@@ -29,8 +29,9 @@ struct devone_data {
 	unsigned char val;
 };
 
-int devone_ioctl(struct inode *inode, struct file *filp, 
-					unsigned int cmd, unsigned long arg)
+int devone_ioctl(struct file *filp, 
+					unsigned int cmd, 
+                    unsigned long arg)
 {
 	struct devone_data *dev = filp->private_data;
 	int retval = 0;
