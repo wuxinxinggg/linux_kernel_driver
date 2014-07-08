@@ -47,7 +47,7 @@ int main(void)
 	if (fds.revents & POLLIN) {
 		printf("read() ...\n");
 		sz = read(fd, buf, sizeof(buf));
-		printf("read() %d\n", sz);
+		printf("read() %ld\n", sz);
 		for (i = 0 ; i < sz ; i++) {
 			printf("%02x ", buf[i]);
 		}

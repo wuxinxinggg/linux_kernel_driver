@@ -18,14 +18,14 @@
 
 MODULE_LICENSE("Dual BSD/GPL");
 
-static unsigned int timeout_value = 10;   
+static unsigned int timeout_value = 15;
 /* driver parameter */
 module_param(timeout_value, uint, 0);
 
 static int devone_devs = 1;        /* device count */
 static int devone_major = 0;       /* MAJOR: dynamic allocation */
 static int devone_minor = 0;       /* MINOR: static allocation */
-static struct cdev devone_cdev;  
+static struct cdev devone_cdev;
 static struct class *devone_class = NULL;
 static dev_t devone_dev;
 
@@ -97,8 +97,8 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 		up(&dev->sem);
 		if (filp->f_flags & O_NONBLOCK)   /* Non-blocking mode */
 			return -EAGAIN;
-		do { 
-			retval = wait_event_interruptible_timeout(dev->read_wait, 
+		do {
+			retval = wait_event_interruptible_timeout(dev->read_wait,
 						dev->timeout_done == 1, 1*HZ);
 			if (retval == -ERESTARTSYS)
 				return -ERESTARTSYS;
@@ -120,7 +120,7 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 out:
 	dev->timeout_done = 0;
 	/* restart timer */
-	mod_timer(&dev->timeout, jiffies + timeout_value*HZ);
+	mod_timer(&dev->timeout, jiffies + timeout_value*HZ);  // timeout_value 秒後call devone_timeout funtionset dev->timeout_done = 1 and devone_poll 函數中 mask |= POLLIN | POLLRDNORM;  , user space retval value 0 to 1   
 
 	up(&dev->sem);
 
@@ -194,7 +194,7 @@ static int devone_init(void)
 	devone_cdev.owner = THIS_MODULE;
 	devone_cdev.ops = &devone_fops;
 	cdev_err = cdev_add(&devone_cdev, MKDEV(devone_major, devone_minor), 1);
-	if (cdev_err) 
+	if (cdev_err)
 		goto error;
 
 	/* register class */
@@ -204,10 +204,10 @@ static int devone_init(void)
 	}
 	devone_dev = MKDEV(devone_major, devone_minor);
 	class_dev = device_create(
-					devone_class, 
-					NULL, 
+					devone_class,
+					NULL,
 					devone_dev,
-					NULL, 
+					NULL,
 					"devone%d",
 					devone_minor);
 
