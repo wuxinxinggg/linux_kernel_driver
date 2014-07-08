@@ -47,7 +47,7 @@ static void devone_timeout(unsigned long arg)
 	spin_lock_irqsave(&dev->lock, flags);
 
 	dev->timeout_done = 1;
-	wake_up_interruptible(&dev->read_wait);
+	wake_up_interruptible(&dev->read_wait);  // 喚醒 sleep process
 
 	spin_unlock_irqrestore(&dev->lock, flags);
 }
@@ -75,6 +75,7 @@ unsigned int devone_poll(struct file *filp, poll_table *wait)
 
 ssize_t devone_write(struct file *filp, const char __user *buf, size_t count, loff_t *f_pos)
 {
+	printk("%s called\n", __func__);
 	return -EFAULT;
 }
 
@@ -85,6 +86,9 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 	int i;
 	unsigned char val;
 	int retval;
+
+	printk("%s called\n", __func__);
+
 
 	if (down_interruptible(&dev->sem))
 		return -ERESTARTSYS;
@@ -147,7 +151,7 @@ int devone_open(struct inode *inode, struct file *filp)
 	/* initialize members */
 	spin_lock_init(&dev->lock);
 
-	init_waitqueue_head(&dev->read_wait);
+	init_waitqueue_head(&dev->read_wait); // 初始化等待隊列頭
 
 	sema_init(&dev->sem, 1);
 

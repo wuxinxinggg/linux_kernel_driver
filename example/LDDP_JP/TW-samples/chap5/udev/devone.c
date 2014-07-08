@@ -25,6 +25,7 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 	int i;
 	unsigned char val = 0xc0;
 	int retval;
+    //dump_stack();
 
 	for (i = 0 ; i < count ; i++) {
 		if (copy_to_user(&buf[i], &val, 1)) {
@@ -35,6 +36,7 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 
 	retval = count;
 out:
+	printk(KERN_ALERT "0x%08X\n", __builtin_return_address(0));
 	return (retval);
 }
 
